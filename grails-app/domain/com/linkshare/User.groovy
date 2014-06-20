@@ -19,7 +19,7 @@ class User {
     String confirmPassword;
 
     static transients=['name','confirmPassword']
-    static hasMany = [userSubTopic:UserSubscribedTopic,topic:Topic,readItem:ReadItem, role:Role]
+    static hasMany = [userSubTopic:UserSubscribedTopic,topic:Topic,readItems:ReadItem, role:Role]
 
     static constraints = {
         email(empty: false,email: true,unique: true)
@@ -35,6 +35,9 @@ class User {
                     return false;
                 }
         })
+    }
+    static mapping = {
+        userSubTopic sort: "dateCreated", order:"desc"
     }
     public String getName(){
         return firstName+" "+lastName;

@@ -19,6 +19,6 @@
         <label class="checkbox">
             <input type="checkbox"> Remember me
         </label>
-        <button type="submit" class="btn btn-success">Sign in</button>
+        <button type="submit" class="btn btn-primary">Sign in</button>
     </div>
 </g:form>

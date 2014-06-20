@@ -24,6 +24,10 @@
 			<thead>
 					<tr>
 					
+						<g:sortableColumn property="dateCreated" title="${message(code: 'group.dateCreated.label', default: 'Date Created')}" />
+					
+						<g:sortableColumn property="lastUpdated" title="${message(code: 'group.lastUpdated.label', default: 'Last Updated')}" />
+					
 						<g:sortableColumn property="description" title="${message(code: 'group.description.label', default: 'Description')}" />
 					
 						<g:sortableColumn property="group" title="${message(code: 'group.group.label', default: 'Group')}" />
@@ -36,7 +40,11 @@
 				<g:each in="${groupInstanceList}" status="i" var="groupInstance">
 					<tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
 					
-						<td><g:link action="show" id="${groupInstance.id}">${fieldValue(bean: groupInstance, field: "description")}</g:link></td>
+						<td><g:link action="show" id="${groupInstance.id}">${fieldValue(bean: groupInstance, field: "dateCreated")}</g:link></td>
+					
+						<td><g:formatDate date="${groupInstance.lastUpdated}" /></td>
+					
+						<td>${fieldValue(bean: groupInstance, field: "description")}</td>
 					
 						<td>${fieldValue(bean: groupInstance, field: "group")}</td>
 					

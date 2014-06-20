@@ -32,6 +32,56 @@ class LoginService {
         if(!user?.getRole()?.contains(role)){
             user.addToRole(role).save(flush: true);
         }
+
+        role = Role.findOrSaveWhere(roleName:  "USER")
+        user= User.findOrSaveWhere(
+                userName: "jeetmp",
+                email: "jeet.mp3@gmail.com",
+                gender: Gender.MALE,
+                firstName: 'Jitendra',
+                lastName: "Bisht",
+                password: 'abcd@1234',
+                country: 'India',
+                profilePicture: "/home/intelligrape/BootCamp/images/f530bc8bcm.jpg"
+        );
+
+        if(user.hasErrors()){
+            user.setConfirmPassword('abcd@1234');
+            user.save(flush: true);
+            if(user.hasErrors()){
+                log.error("Cannot create jeetmp3 User because validation error has been occurred.")
+                user.getErrors().each {
+                    log.error it
+                }
+            }
+        }
+        if(!user?.getRole()?.contains(role)){
+            user.addToRole(role).save(flush: true);
+        }
+        user= User.findOrSaveWhere(
+                userName: "sonu",
+                email: "sonu@gmail.com",
+                gender: Gender.MALE,
+                firstName: 'Sonu',
+                lastName: "Bisht",
+                password: 'abcd@1234',
+                country: 'India',
+                profilePicture: "/home/intelligrape/BootCamp/images/3402528.jpg"
+        );
+
+        if(user.hasErrors()){
+            user.setConfirmPassword('abcd@1234');
+            user.save(flush: true);
+            if(user.hasErrors()){
+                log.error("Cannot create sonu User because validation error has been occurred.")
+                user.getErrors().each {
+                    log.error it
+                }
+            }
+        }
+        if(!user?.getRole()?.contains(role)){
+            user.addToRole(role).save(flush: true);
+        }
     }
 
     User requestLogin(String username,String password){
@@ -41,17 +91,6 @@ class LoginService {
         }else{
             return null;
         }
-    }
-
-    File saveFile(CommonsMultipartFile rawFile,String filesPath){
-        StringBuilder filePath = new StringBuilder(filesPath)
-                .append(File.separator)
-                .append(UUID.randomUUID().toString().replaceAll("-", "").substring(1,10))
-                .append(rawFile?.originalFilename);
-        log.error(rawFile.getStorageDescription());
-        File file = new File(filePath.toString());
-        file.bytes = rawFile.bytes;
-        return file;
     }
 
     def registerNewUser(User user){

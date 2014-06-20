@@ -1,0 +1,1 @@
+<g:paginate total="${count}" controller="topic" action="list"/>

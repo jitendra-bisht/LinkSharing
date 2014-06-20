@@ -49,7 +49,7 @@
                 </a>
             </li>
             <li>
-                <a href="${createLink(controller: 'LSResource',action: 'resourceInbox')}">
+                <a href="${createLink(controller: 'resource',action: 'resourceInbox')}">
                     Resource Inbox
                 </a>
             </li>

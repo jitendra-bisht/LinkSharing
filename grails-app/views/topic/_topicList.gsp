@@ -13,7 +13,7 @@
         text-decoration: none;
     }
 </style>
-<script>
+%{--<script>
     $(document).ready(function(){
         refereshDOM();
         $(".resource").click(function(){
@@ -81,7 +81,7 @@
             $(this).attr('href',href)
         });
     }
-</script>
+</script>--}%
 <g:if test="${params.sub || params.unsub}">
     <div id="deleteStatus" class="message" role="status">
         <g:if test="${params.sub=='true'}">
@@ -94,42 +94,60 @@
 </g:if>
 <div id="deleteStatus" class="message" role="status" style="display: none;">
 </div>
-<table width="100%" style="font-size: 12px;">
-        <tr>
-            <th>S. No</th>
-            <th>Topic Name</th>
-            <th>Topic Description</th>
-            <th>Topic Visibility</th>
-            <th>Created Date</th>
-            <th>Options</th>
-        </tr>
-        <g:each in="${topics}" var="topic" status="index">
-            <tr id="${topic.id}">
-                <td>${index+1}</td>
-                <td>${topic.topicName}</td>
-                <td>${topic.description?.substring(0,(topic.description?.size()<30?topic.description?.size():30))}</td>
-                <td>${topic.visibility}</td>
-                <td>${g.formatDate(format: 'dd-MM-yyyy',date: topic.dateCreated)}</td>
-                <td class="optionList">
-                    <g:if test="${session.USER_DETAIL?.id == topic.createdBy?.id}">
-                        <ul class="topicListOwner">
-                           <li><a class="delete" href="${createLink(controller: 'topic',action: 'deleteTopic')}?id=${topic.id}">Delete Topic</a></li>
-                           <li><a class="invite" href="">Invite People</a></li>
-                           <li><a class="resource" href="${createLink(controller: 'LSResource',action: 'index')}?id=${topic.id}">Submit Resource</a></li>
-                        </ul>
-                    </g:if>
-                    <g:elseif test="${topic?.userSubTopic?.collect{it.user.id}?.contains(session.USER_DETAIL?.id)}">
-                        <ul class="topicListSubscribe">
-                            <li><a class="unsub" href="${createLink(controller: 'topic',action: 'unsubscribeTopic')}?id=${topic.id}">Unsubscribed</a></li>
-                            <li><a class="resource" href="${createLink(controller: 'LSResource',action: 'index')}?id=${topic.id}">Submit Resource</a></li>
-                        </ul>
-                    </g:elseif>
-                    <g:else>
-                        <ul class="topicListPublic">
-                            <li><a class="sub" href="${createLink(controller: 'topic',action: 'subscribeTopic')}?id=${topic.id}">Subscribe Topic</a></li>
-                        </ul>
-                    </g:else>
-                </td>
+<div class="table-responsive">
+    <table width="100%" style="font-size: 12px;" class="table table-hover">
+            <tr>
+                <th>S. No</th>
+                <th>Topic Name</th>
+                <th>Topic Description</th>
+                <th>Topic Visibility</th>
+                <th>Created Date</th>
+                <th>Options</th>
             </tr>
-        </g:each>
-</table>
+            <g:each in="${topics}" var="topic" status="index">
+                <tr id="${topic.id}">
+                    <td>${index+(params.int("offset")?:0)+1}</td>
+                    <td>${topic.topicName}</td>
+                    <td>${topic.description?.substring(0,(topic.description?.size()<30?topic.description?.size():30))}</td>
+                    <td>${topic.visibility}</td>
+                    %{--<td>${g.formatDate(format: 'dd-MM-yyyy',date: topic.dateCreated)}</td>--}%
+                    <td>${ls.dateAsString(date: topic.dateCreated)}</td>
+                    %{--<td>${topic.dateCreated}</td>--}%
+                    <td class="optionList">
+                        <g:if test="${session.USER_DETAIL?.id == topic.createdBy?.id}">
+                            <ul class="topicListOwner">
+                               <li><a class="delete" href="${createLink(controller: 'topic',action: 'deleteTopic',id: topic.id)}">Delete Topic</a></li>
+                               <li><a class="invite" href="">Invite People</a></li>
+                               <li><a class="resource" href="${createLink(controller: 'resource',action: 'index',id: topic.id)}">Submit Resource</a></li>
+                            </ul>
+                        </g:if>
+                        <g:elseif test="${topic?.userSubTopic?.collect{it.user.id}?.contains(session.USER_DETAIL?.id)}">
+                            <ul class="topicListSubscribe">
+                                <li><a class="unsub" href="${createLink(controller: 'topic',action: 'unsubscribeTopic',id: topic.id)}">Unsubscribed</a></li>
+                                <li><a class="resource" href="${createLink(controller: 'resource',action: 'index',id: topic.id)}">Submit Resource</a></li>
+                            </ul>
+                        </g:elseif>
+                        <g:else>
+                            <ul class="topicListPublic">
+                                <li><a class="sub" href="${createLink(controller: 'topic',action: 'subscribeTopic',id: topic.id)}">Subscribe Topic</a></li>
+                            </ul>
+                        </g:else>
+                    </td>
+                </tr>
+            </g:each>
+            <g:if test="${topics.hasProperty("totalCount")}">
+                <tr>
+                    <td colspan="6" style="text-align: center;">
+                        <ls:paginate max="8" total="${topics.totalCount}" controller="${controllerName}" action="${actionName}"></ls:paginate>
+                    </td>
+                </tr>
+            </g:if>
+            <g:elseif test="${totalCount}">
+                <tr>
+                    <td colspan="6" style="text-align: center;">
+                        <ls:paginate max="8" total="${totalCount}" controller="${controllerName}" action="${actionName}"></ls:paginate>
+                    </td>
+                </tr>
+            </g:elseif>
+        </table>
+</div>

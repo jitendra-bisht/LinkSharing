@@ -6,12 +6,12 @@
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
-<div class="post-container">
-    <div class="post-box">
-        <div class="post-title-bar">
-            Recent Shares
-        </div>
-        <ul class="media-list">
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4 class="panel-title">Recent Shares</h4>
+    </div>
+    <div class="panel-body">
+     <ul class="media-list">
         <%
             for(int i=1;i<=5;i++){
         %>
@@ -31,10 +31,12 @@
         <%}%>
         </ul>
     </div>
-    <div class="post-box">
-        <div class="post-title-bar">
-            Top Shares
-        </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4 class="panel-title">Top Share</h4>
+    </div>
+    <div class="panel-body">
         <ul class="media-list">
             <%
                 for(int i=1;i<=5;i++){

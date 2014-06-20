@@ -2,6 +2,24 @@
 
 
 
+<div class="fieldcontain ${hasErrors(bean: groupInstance, field: 'address', 'error')} ">
+	<label for="address">
+		<g:message code="group.address.label" default="Address" />
+		
+	</label>
+	
+<ul class="one-to-many">
+<g:each in="${groupInstance?.address?}" var="a">
+    <li><g:link controller="address" action="show" id="${a.id}">${a?.encodeAsHTML()}</g:link></li>
+</g:each>
+<li class="add">
+<g:link controller="address" action="create" params="['group.id': groupInstance?.id]">${message(code: 'default.add.label', args: [message(code: 'address.label', default: 'Address')])}</g:link>
+</li>
+</ul>
+
+
+</div>
+
 <div class="fieldcontain ${hasErrors(bean: groupInstance, field: 'description', 'error')} required">
 	<label for="description">
 		<g:message code="group.description.label" default="Description" />

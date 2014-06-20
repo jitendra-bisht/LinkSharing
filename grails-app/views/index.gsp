@@ -6,6 +6,7 @@
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@page defaultCodec="none" %>
 <html>
 <head>
     <meta name="layout" content="mainLayout">
@@ -16,10 +17,10 @@
     <div class="container" style="margin-top: 60px;">
         <div class="row-fluid">
             <div class="span7">
-                <g:include view="commons/post.gsp"></g:include>
+                ${CONTENT}
             </div>
 
-            <div class="span5 well">
+            <div class="span5">
                 <g:render template="/commons/register"></g:render>
             </div>
         </div>

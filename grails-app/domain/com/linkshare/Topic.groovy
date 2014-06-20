@@ -8,11 +8,15 @@ class Topic {
     Date dateCreated;
     Visibility visibility;
 
-    static hasMany = [userSubTopic:UserSubscribedTopic,linkResource:LinkResource,documentResource:DocumentResource]
+    static hasMany = [userSubTopic:UserSubscribedTopic,resource:Resource]
     static belongsTo = [createdBy:User]
 
     static constraints = {
         topicName(unique: true,empty: false)
-        description(empty: false,maxSize: 1024)
+        description(empty: false)
+    }
+    static mapping = {
+        description type: "text"
+        resource sort: "dateCreated",order: "desc"
     }
 }

@@ -18,6 +18,8 @@
     <link href="${resource(dir: 'css', file: 'bootstrap-responsive.css')}" rel="stylesheet">
     <link href="${resource(dir: 'css', file: 'desktop.css')}" rel="stylesheet">
 
+    <g:javascript src="jquery-1.11.1.min.js"></g:javascript>
+
     <g:layoutHead/>
 </head>
 
@@ -27,8 +29,6 @@
     <g:layoutBody/>
     <g:render template="/commons/footer"></g:render>
 </div>
-
-<g:javascript src="jquery-1.11.1.min.js"></g:javascript>
 <script src="${resource(dir: 'js', file: 'bootstrap.js')}"></script>
 </body>
 </html>

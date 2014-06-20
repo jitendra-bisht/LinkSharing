@@ -1,20 +1,22 @@
 package com.linkshare
 
-import tst.BeanDemo
-import tst.BeanDemo2
-
 class LoginController {
     static allowedMethods = {
         loginHandler:
         ["POST"]
     }
     LoginService loginService;
+    TopicService topicService;
+    CommonApiService commonApiService;
 
     def index() {
         if(session.USER_DETAIL && session.USER_DETAIL instanceof User){
             redirectedToHomepage(session.USER_DETAIL)
         }else{
-            render view: "/index"
+            List<Topic> recent = topicService.listAllPublicTopics(0,5);
+            String data = g.render(template: "/user/recentShareTopicList",model: [recentShare:recent])
+            data += g.render(template: "/user/topShareTopicList",model: [recentShare:recent])
+            render view: "/index",model: [CONTENT:data]
         }
     }
 
@@ -38,7 +40,7 @@ class LoginController {
     }
 
     def registerUser(User user) {
-        File file = loginService.saveFile(params.imageFile,grailsApplication.config.path.images)
+        File file = commonApiService.uploadFile(params.imageFile,grailsApplication.config.path.images)
         user.profilePicture = file.getAbsolutePath()
 
         if(user.hasErrors()){

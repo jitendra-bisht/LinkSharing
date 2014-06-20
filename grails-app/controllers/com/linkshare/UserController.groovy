@@ -1,28 +1,22 @@
 package com.linkshare
 
-import extra.Visibility
-import grails.converters.JSON
-
 class UserController {
+    UserService userService;
+
     def index() {
-        List<Topic> recent = Topic.findAllByVisibility(Visibility.PUBLIC,[sort: "dateCreated",order:"desc"]);
-        String data = g.render(template: "/topic/postList",model: [recentShare:recent])
-        render view: "index",model: [CONTENT:data];
+        forward(controller: 'resource',action: 'resourceInbox');
     }
 
-    def resourceInbox(){
-        StringBuffer sb = new StringBuffer();
-        100.times {
-            sb.append("Inb ox");
-        }
-        render ([data: sb.toString()] as JSON)
+    def userAccount(){
+        User user = User.read(session.USER_DETAIL?.id);
+        renderResponse([user:user]);
     }
-
-    def profilePicture(){
-        render(file: new File(session.USER_DETAIL?.profilePicture),contentType: 'image/jpeg')
+    def update(){
+        Map status = userService.changePassword(params);
+        renderResponse(status);
     }
-    def profilePictureById(Integer id){
-        User user = User.get(id);
-        render(file: new File(user?.profilePicture),contentType: 'image/jpeg')
+    private renderResponse(Map map){
+        String data = g.render(template: 'userProfile',model: map)
+        render view: "/home",model: [CONTENT:data]
     }
 }

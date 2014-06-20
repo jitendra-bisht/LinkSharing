@@ -10,8 +10,9 @@ class GroupController {
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    def index() {
-        render view: "/bstest";
+    def index(Integer max) {
+        params.max = Math.min(max ?: 10, 100)
+        respond Group.list(params), model:[groupInstanceCount: Group.count()]
     }
 
     def show(Group groupInstance) {
@@ -99,11 +100,5 @@ class GroupController {
             }
             '*'{ render status: NOT_FOUND }
         }
-    }
-
-    def test(){
-        Group group = Group.read(1);
-        log.error("For Testing")
-        render group.address?.city;
     }
 }

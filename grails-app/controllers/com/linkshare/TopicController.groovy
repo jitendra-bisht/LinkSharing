@@ -5,37 +5,26 @@ import extra.Visibility
 import grails.converters.JSON
 
 class TopicController {
+    TopicService topicService;
+
     static allowedMethods = {
         saveTopic: ["POST"]
     }
 
     // TOPIC CURD
     def createTopic(){
-        String form = g.render(template: 'createTopic')
-        common(form)
+        commonRender('createTopic',[topics:topicService.latestNTopicsCreatedByMe(session.USER_DETAIL,3)])
     }
     def myTopics(){
-        String topics = g.render(template: "topicList",model:[topics:Topic.findAllByCreatedBy(session.USER_DETAIL)])
-        common(topics)
+        commonRender("topicList",[topics:topicService.listMyTopics(params.int("offset")?:0,params.int("max")?:5,session.USER_DETAIL)])
     }
     def saveTopic(Topic topic){
-        if(topic){
-            topic.createdBy=session.USER_DETAIL
-        }
-        if(topic?.validate()){
-            topic.save(flush: true);
-            User user = User.get(session.USER_DETAIL?.id)
-            UserSubscribedTopic.findOrSaveWhere(
-            user: user,
-            topic:topic,
-            priority:TopicPriority.HIGH);
-        }
-        render (view: 'create',model: [topic:topic])
+        topicService.saveNewTopic(topic,session.USER_DETAIL);
+        commonRender('createTopic',[topic:topic,topics:topicService.latestNTopicsCreatedByMe(session.USER_DETAIL,4)]);
     }
 
     def listAllTopics(){
-        String topics = g.render(template: "topicList",model:[topics:Topic.findAllByVisibility(Visibility.PUBLIC)])
-        common(topics)
+        commonRender('topicList',[topics:topicService.listAllPublicTopics(params.int("offset")?:0,params.int("max")?:5)])
     }
     def deleteTopic(Integer id){
         Topic.get(id)?.delete(flush: true);
@@ -50,19 +39,14 @@ class TopicController {
     // Subscription related Actions
 
     def listSubscribedTopics(){
-        User user = User.get(session.USER_DETAIL?.id);
-        String topics = g.render(template: "topicList",model:[topics:user.userSubTopic.topic])
-        common(topics)
+        int min = params.int("offset")?:0;
+        int max = (params.int("max")?:8) + min;
+        List<Topic> list = topicService.listSubscribedTopics(session.USER_DETAIL)
+        commonRender("topicList",[topics:list.subList(min,max<list.size()?max:list.size()),totalCount:list.size()]);
     }
 
     def subscribeTopic(Integer id){
-        User user = User.get(session.USER_DETAIL?.id);
-        Topic topic = Topic.get(id);
-        UserSubscribedTopic.findOrSaveWhere(
-                user:user,
-                topic: topic,
-                priority: TopicPriority.MID
-        )
+        topicService.subscribeTopic(session.USER_DETAIL,id);
         if(params.js){
             render([data:'Success'] as JSON)
         }else{
@@ -71,14 +55,7 @@ class TopicController {
     }
 
     def unsubscribeTopic(Integer id){
-        User user = User.get(session.USER_DETAIL?.id);
-        Topic topic = Topic.get(id);
-        UserSubscribedTopic.findWhere(
-                user:user,
-                topic: topic,
-                priority: TopicPriority.MID
-        ).delete(flush: true)
-
+        topicService.unsubscribeTopic(session.USER_DETAIL,id);
         if(params.js){
             render([data:'Success'] as JSON)
         }else{
@@ -87,11 +64,16 @@ class TopicController {
     }
     // Common Methods
 
-    private common(def data){
+    private def commonRender(String template,Map model){
+        String data = g.render(template: template,
+                model: model);
         if(params.js)
             render ([data: data] as JSON)
-        else
-            render view:"/user/index",model: [CONTENT:data]
+        else{
+            render view:"/home",model: [CONTENT:data]
+        }
     }
-
+    def list(){
+        [topics:Topic.list(),count:Topic.count()]
+    }
 }
