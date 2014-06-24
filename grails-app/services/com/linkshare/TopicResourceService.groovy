@@ -4,7 +4,7 @@ import grails.transaction.Transactional
 
 @Transactional
 class TopicResourceService {
-    CommonApiService commonAPI;
+    CommonApiService commonApiService;
     def grailsApplication;
 
     Map getTopicOrTopicList(Integer id,User sessionUser) {
@@ -67,7 +67,7 @@ class TopicResourceService {
                     }
 
                 }else if(params.type == "document"){
-                    File file = commonAPI.uploadFile(params.doc,
+                    File file = commonApiService.uploadFile(params.doc,
                             grailsApplication.config.path.document);
                     DocumentResource resource = new DocumentResource(
                             topic: topic,
